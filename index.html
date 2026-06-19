@@ -45,25 +45,26 @@
     </div>
   </main>
 
-  <div class="sub-strip-floating" title="15 Sub-agent sidekicks">
-    <div class="sub-strip-label">🐾 Sub-agent</div>
-    <div class="char-strip char-strip-sub char-strip-inline" id="sub-strip"></div>
+  <div class="bottom-stack">
+    <div class="sub-strip-floating" title="15 Sub-agent sidekicks">
+      <div class="sub-strip-label">🐾 Sub-agent</div>
+      <div class="char-strip char-strip-sub char-strip-inline" id="sub-strip"></div>
+    </div>
+    <footer class="botbar">
+      <div class="legend-group">
+        <span class="dot dot-hard"></span><span>sibuk (sub-agent jalan)</span>
+        <span class="dot dot-awake"></span><span>aktif sendiri</span>
+        <span class="dot dot-sleep"></span><span>tidur (idle &gt; 5 menit)</span>
+      </div>
+      <div class="legend-group">
+        <span>refresh tiap <b id="refresh-ctr">2</b>s</span>
+        <span>•</span>
+        <span>karakter agent = hash session_id × 15 pool</span>
+        <span>•</span>
+        <span>sub-agent hewan = parent agent yang sama</span>
+      </div>
+    </footer>
   </div>
-
-  <footer class="botbar">
-    <div class="legend-group">
-      <span class="dot dot-hard"></span><span>sibuk (sub-agent jalan)</span>
-      <span class="dot dot-awake"></span><span>aktif sendiri</span>
-      <span class="dot dot-sleep"></span><span>tidur (idle &gt; 5 menit)</span>
-    </div>
-    <div class="legend-group">
-      <span>refresh tiap <b id="refresh-ctr">2</b>s</span>
-      <span>•</span>
-      <span>karakter agent = hash session_id × 15 pool</span>
-      <span>•</span>
-      <span>sub-agent hewan = parent agent yang sama</span>
-    </div>
-  </footer>
 
   <script src="app.js"></script>
 </body>

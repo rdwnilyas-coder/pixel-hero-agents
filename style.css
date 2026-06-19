@@ -226,20 +226,31 @@ html, body {
   justify-content: center;
 }
 
-/* Floating sub-agent strip di pojok kiri-bawah (overlay, tidak nambah tinggi) */
-.sub-strip-floating {
+/* Stack pojok kiri-bawah: sub-strip nempel persis di atas footer botbar */
+.bottom-stack {
   position: fixed;
-  left: 12px;
-  bottom: 36px;                       /* nempel di atas footer botbar */
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  pointer-events: none;
+}
+.bottom-stack > * { pointer-events: auto; }
+
+.sub-strip-floating {
+  align-self: flex-start;             /* tetap pojok kiri */
+  margin: 0 0 0 12px;
   background: rgba(20, 14, 45, 0.92);
   border: 2px solid #5a3e8c;
+  border-bottom: none;                /* nempel mulus ke footer */
   padding: 6px 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  max-width: none;                    /* 1 row, ikut isi */
-  pointer-events: auto;
+  max-width: none;
 }
 .sub-strip-label {
   font-size: 8px;
