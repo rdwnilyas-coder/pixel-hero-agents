@@ -364,17 +364,6 @@ html, body {
   66%, 100%    { background-image: url('assets/furniture/PC/PC_FRONT_ON_3.png'); }
 }
 
-.chair {
-  position: absolute;
-  left: var(--tile);
-  top: calc(var(--tile) * 3);
-  width: var(--tile);
-  height: calc(var(--tile) * 2);
-  background: url('assets/furniture/WOODEN_CHAIR/WOODEN_CHAIR_BACK.png') no-repeat;
-  background-size: 100% 100%;
-  z-index: 1;
-}
-
 /* WORKER — overlay di samping kiri meja. Avatar dekat meja tapi tidak nutup PC.
    z-index 3 = di depan meja (z=2), di belakang PC (z=4). */
 .worker {
@@ -607,24 +596,6 @@ html, body {
 .dot-hard  { background: #ff6464; box-shadow: 0 0 4px #ff6464; }
 .dot-awake { background: #f5d76e; box-shadow: 0 0 4px #f5d76e; }
 .dot-sleep { background: #7a7a8a; opacity: 0.75; }
-
-/* === STATION FLIPPED (chair di atas, untuk pair vertikal face-to-face) === */
-.station.flipped .pc {
-  top: calc(var(--tile) * 2);        /* PC di bawah */
-}
-.station.flipped .desk-front {
-  top: var(--tile);                  /* desk tetap di tengah */
-}
-.station.flipped .chair {
-  top: calc(var(--tile) * -1);       /* chair di atas desk */
-}
-.station.flipped .worker {
-  top: calc(var(--tile) * -0.3);     /* worker duduk di chair (atas) */
-}
-.station.flipped .sub-badge { top: calc(var(--tile) * 2); }
-.station.flipped .cell-label {
-  top: calc(var(--tile) * 1.4);      /* worker flipped ada di sekitar row 0.7-1.4 */
-}
 
 /* === DISPENSER air === */
 .dispenser {

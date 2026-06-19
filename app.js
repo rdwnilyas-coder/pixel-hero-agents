@@ -14,17 +14,6 @@ let agentMap = new Map();         // session_id -> agent index 0-14 (UNIK)
 let usedAgents = new Set();       // agent indices yang dipakai
 let staticRendered = false;
 
-const SUBAGENT_EMOJI = {
-  'Explore':           '🐀',
-  'general-purpose':   '🦔',
-  'Plan':              '🦫',
-  'claude-code-guide': '🐰',
-  'statusline-setup':  '🐢',
-  'general':           '🐭',
-  'code-reviewer':     '🦡',
-  'Workflow':          '🦊',  // workflow orchestrator
-};
-
 /* Room: 30 × 16 tiles @ 48px = 1440 × 768
    ZONE WORK: cols 0-15 (16 tiles wide)
    ZONE LOUNGE: cols 16-29 (14 tiles wide)
@@ -92,37 +81,12 @@ const WORK_PLANTS = [
   { x: TILE*7,  y: TILE*0  },     // top tengah
 ];
 
-/* Palette warna desk + chair untuk variasi colorful */
-const DESK_COLORS = [
-  { desk: '#b08968', shadow: '#8b6749' }, // brown wood
-  { desk: '#d4a373', shadow: '#a07a4b' }, // light wood
-  { desk: '#4a90e2', shadow: '#2e6cb8' }, // blue
-  { desk: '#50c878', shadow: '#359656' }, // green
-  { desk: '#f5d76e', shadow: '#c4a82e' }, // yellow
-  { desk: '#9c6ade', shadow: '#6e3eb0' }, // purple
-  { desk: '#ff9a4a', shadow: '#cc6e1e' }, // orange
-  { desk: '#ff7ec8', shadow: '#cc4d97' }, // pink
-  { desk: '#7be0ff', shadow: '#3aa8cf' }, // cyan
-  { desk: '#e85d5d', shadow: '#b53636' }, // red
-];
-
-const CHAIR_COLORS = [
-  { seat: '#d54e6e', shadow: '#b73852' },  // pink
-  { seat: '#4a90e2', shadow: '#2e6cb8' },  // blue
-  { seat: '#50c878', shadow: '#359656' },  // green
-  { seat: '#f5d76e', shadow: '#c4a82e' },  // yellow
-  { seat: '#9c6ade', shadow: '#6e3eb0' },  // purple
-  { seat: '#ff9a4a', shadow: '#cc6e1e' },  // orange
-];
-
-
 function hashStr(s) {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) & 0xFFFFFFFF;
   return Math.abs(h);  // bitwise AND di JS treat hasil sebagai signed int
 }
 
-function subAgentEmoji(type) { return SUBAGENT_EMOJI[type] || '🐭'; }
 function expressionIcon(expr) {
   return { sleeping: '💤', awake: '😊', hard: '💪' }[expr] || '';
 }
@@ -235,56 +199,6 @@ function ageLabel(sec) {
 function projectShort(name) {
   let p = name.replace(/^[A-Z]--/, '').replace(/^claude-?/, '');
   return p || name;
-}
-
-function renderStation(s, idx) {
-  const slot = SLOTS[idx % SLOTS.length];
-
-  const prevCount = knownSubagents[s.id] || 0;
-  const isNewSpawn = s.n_subagents > prevCount;
-  knownSubagents[s.id] = s.n_subagents;
-  const spawnGlow = (isNewSpawn ||
-    (s.seconds_since_spawn !== null && s.seconds_since_spawn < 5));
-
-  const recent = s.recent_subagent_types || {};
-  const totalRecent = Object.values(recent).reduce((a,b)=>a+b, 0);
-
-  const expr = s.expression || 'awake';
-  const proj = projectShort(s.project);
-  const msg = s.first_user_message || '';
-  const lastTool = s.last_tool || (s.status === 'sleeping' ? 'idle' : '');
-
-  const badge = totalRecent > 0
-    ? `<div class="sub-badge">+${totalRecent}</div>` : '';
-
-  const flipped = !!slot.flipped;
-  const stationStyle = `left:${slot.x}px; top:${slot.y}px;`;
-  const counterRot = '';
-
-  return `
-    <div class="station expression-${expr} ${flipped ? 'flipped' : ''} ${spawnGlow ? 'spawn-glow' : ''}"
-         data-id="${s.id}" style="${stationStyle}">
-      <div class="desk-front"></div>
-      <div class="pc"></div>
-      <div class="chair"></div>
-      <div class="worker" style="${counterRot}">
-        <div class="body char-${hashStr(s.id) % 6}"></div>
-        <div class="head">${s.animal}</div>
-        <div class="expression-icon">${expressionIcon(expr)}</div>
-      </div>
-      ${badge}
-      <div class="cell-label" style="${counterRot} translateX(-50%);">${escapeHtml(proj).slice(0, 14)} · ${s.short_id}</div>
-      <div class="tooltip" style="${counterRot} translateX(-50%);">
-        <div><b>${escapeHtml(proj)}</b></div>
-        <div>id: ${s.short_id}</div>
-        <div>msgs: ${s.n_messages} · tools: ${s.n_tools}</div>
-        <div>last tool: ${escapeHtml(lastTool)}</div>
-        <div>sub-agents: ${s.n_subagents}</div>
-        <div>last: ${ageLabel(s.age_seconds)} ago</div>
-        ${msg ? `<div style="margin-top:4px;color:var(--orange)">${escapeHtml(msg).slice(0,80)}</div>` : ''}
-      </div>
-    </div>
-  `;
 }
 
 function renderLoungeDecorations() {
@@ -439,26 +353,6 @@ function renderTennis() {
   </div>`;
 }
 
-
-function renderSubAgentRoamers(sessions) {
-  // Kumpulkan semua recent sub-agent dari semua parent → wander di lounge
-  const all = [];
-  for (const s of sessions) {
-    const recent = s.recent_subagent_types || {};
-    for (const [type, cnt] of Object.entries(recent)) {
-      for (let i = 0; i < cnt; i++) {
-        all.push({ type, parent: s.id });
-        if (all.length >= 6) break;  // max 6 roamer di lounge
-      }
-      if (all.length >= 6) break;
-    }
-    if (all.length >= 6) break;
-  }
-  return all.map((r, i) => {
-    const em = subAgentEmoji(r.type);
-    return `<div class="sub-roamer lpath-${i}" data-type="${escapeHtml(r.type)}" title="${escapeHtml(r.type)}">${em}</div>`;
-  }).join('');
-}
 
 function render(data) {
   const desks = document.getElementById('desks');
