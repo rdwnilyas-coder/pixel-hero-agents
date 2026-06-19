@@ -69,7 +69,7 @@ const LOUNGE_DECO = [
   { type: 'coffee-table', x: TILE*11, y: TILE*7  },
   // Bottom decorations (between bottom desks)
   { type: 'cactus',       x: TILE*4,  y: TILE*15 },
-  { type: 'large-plant',  x: TILE*9,  y: TILE*15 },
+  { type: 'large-plant',  x: TILE*9,  y: TILE*15-50 },  // naik 50px
   { type: 'bookshelf',    x: TILE*13, y: TILE*11 },
 ];
 
@@ -79,13 +79,13 @@ const WORK_DECO = [
   { type: 'bookshelf',    x: TILE*13, y: TILE*1  },
 ];
 
-/* Tanaman pot di baris bawah WORK zone (row 14-15), MENIRU lounge bottom (cactus + large-plant) */
+/* Tanaman pot di baris bawah WORK zone — MIRIP lounge (mix cactus + dedaunan besar) */
 const WORK_BOTTOM_PLANTS = [
-  { x: TILE*0,  y: TILE*14 },      // pojok kiri-bawah
-  { x: TILE*3,  y: TILE*14 },      // kiri-tengah bawah
-  { x: TILE*5,  y: TILE*14 },      // antara dispenser dan tennis
-  { x: TILE*13, y: TILE*14 },      // kanan bawah (samping tennis)
-  { x: TILE*15, y: TILE*14 },      // pojok kanan-bawah
+  { type: 'cactus',      x: TILE*0,  y: TILE*14 },     // pojok kiri-bawah kaktus
+  // (dedaunan besar kiri-bawah dihapus)
+  { type: 'plant',       x: TILE*5,  y: TILE*14 },     // kecil antara dispenser & tennis
+  { type: 'large-plant', x: TILE*13, y: TILE*13 },     // dedaunan BESAR kanan
+  { type: 'cactus',      x: TILE*15, y: TILE*14 },     // pojok kanan-bawah kaktus
 ];
 
 /* Chess board di lounge — kanan-bawah area kosong (lounge-rel cols 12-13, rows 9-10),
@@ -99,14 +99,14 @@ const PRESIDENT_FRAMES = [
   { label: 'Wapres',   x: TILE*10,   y: TILE*0.2, skin: '#e0b48c' },   // kulit lebih terang
 ];
 
-/* Work zone plants — JANGAN dekat walkway (yang ada di cols 8-12 rows 13-14).
-   Pojok-pojok saja supaya tidak ganggu visual jalan lewat. */
+/* Work zone plants — JANGAN dekat walkway (cols 8-12 rows 13-14).
+   Variatif: kombinasi plant kecil, cactus, dan large-plant (dedaunan besar). */
 const WORK_PLANTS = [
-  { x: TILE*0,  y: TILE*5  },     // kiri tengah-atas
-  { x: TILE*0,  y: TILE*11 },     // kiri tengah-bawah
-  { x: TILE*15, y: TILE*11 },     // kanan, jauh dari walkway
-  { x: TILE*3,  y: TILE*0  },     // top kiri
-  { x: TILE*7,  y: TILE*0  },     // top tengah
+  { type: 'plant',       x: TILE*0,    y: TILE*5  },   // kiri tengah-atas (kecil)
+  { type: 'large-plant', x: TILE*0-100,y: TILE*8  },   // dedaunan BESAR digeser 100px keluar ke kiri
+  { type: 'cactus',      x: TILE*15,   y: TILE*5  },   // kanan, kaktus
+  { type: 'plant',       x: TILE*3,    y: TILE*0  },   // top kiri (kecil)
+  { type: 'cactus',      x: TILE*9-100,y: TILE*0  },   // digeser 100px ke kiri menjauhi foto presiden
 ];
 
 function hashStr(s) {
@@ -237,7 +237,7 @@ function renderLoungeDecorations() {
 
 function renderWorkPlants() {
   return WORK_PLANTS.map(p =>
-    `<div class="work-plant" style="left:${p.x}px; top:${p.y}px;"></div>`
+    `<div class="lounge-item ${p.type}" style="left:${p.x}px; top:${p.y}px;"></div>`
   ).join('');
 }
 
@@ -249,7 +249,7 @@ function renderWorkDeco() {
 
 function renderWorkBottomPlants() {
   return WORK_BOTTOM_PLANTS.map(p =>
-    `<div class="work-plant" style="left:${p.x}px; top:${p.y}px;"></div>`
+    `<div class="lounge-item ${p.type}" style="left:${p.x}px; top:${p.y}px;"></div>`
   ).join('');
 }
 
@@ -681,6 +681,7 @@ const LOUNGE_ITEM_DIMS = {
   cactus:         { w: 1, h: 2 },
   'large-plant':  { w: 2, h: 3 },
   'tv-deco':      { w: 2, h: 2 },
+  plant:          { w: 1, h: 2 },
 };
 
 function markObstacleTile(grid, col, row, wTile, hTile) {
@@ -723,15 +724,17 @@ function buildWalkableGrid() {
     Math.round(DISPENSER.x / TILE), Math.round(DISPENSER.y / TILE),
     Math.round(DISPENSER.w / TILE), Math.round(DISPENSER.h / TILE));
 
-  // Work plants
+  // Work plants — dimensi per type
   for (const p of WORK_PLANTS) {
+    const dims = LOUNGE_ITEM_DIMS[p.type] || { w: 1, h: 2 };
     markObstacleTile(grid,
-      Math.round(p.x / TILE), Math.round(p.y / TILE), 1, 2);
+      Math.round(p.x / TILE), Math.round(p.y / TILE), dims.w, dims.h);
   }
-  // Work bottom plants (row 14-15)
+  // Work bottom plants
   for (const p of WORK_BOTTOM_PLANTS) {
+    const dims = LOUNGE_ITEM_DIMS[p.type] || { w: 1, h: 2 };
     markObstacleTile(grid,
-      Math.round(p.x / TILE), Math.round(p.y / TILE), 1, 2);
+      Math.round(p.x / TILE), Math.round(p.y / TILE), dims.w, dims.h);
   }
 
   // Work zone deco (bookshelf di pojok kanan-atas, etc.)

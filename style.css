@@ -379,6 +379,10 @@ html, body {
   width: var(--tile); height: calc(var(--tile)*2);
   background-image: url('assets/furniture/CACTUS/CACTUS.png');
 }
+.lounge-item.plant {
+  width: var(--tile); height: calc(var(--tile)*2);
+  background-image: url('assets/furniture/PLANT/PLANT.png');
+}
 .lounge-item.painting {
   width: var(--tile); height: calc(var(--tile)*2);
   background-image: url('assets/furniture/SMALL_PAINTING/SMALL_PAINTING.png');
