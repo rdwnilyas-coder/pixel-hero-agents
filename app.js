@@ -63,12 +63,20 @@ const LOUNGE_DECO = [
   { type: 'painting',     x: TILE*1,  y: TILE*1  },
   { type: 'clock',        x: TILE*3,  y: TILE*1  },
   // Middle-strip antara pair lounge top dan bottom rows
+  // Decorative retro TV — di bawah clock (top-left area lounge)
+  { type: 'tv-deco',      x: TILE*2,  y: TILE*4  },
   { type: 'sofa-front',   x: TILE*8,  y: TILE*6  },  // between desks
   { type: 'coffee-table', x: TILE*11, y: TILE*7  },
   // Bottom decorations (between bottom desks)
   { type: 'cactus',       x: TILE*4,  y: TILE*15 },
   { type: 'large-plant',  x: TILE*9,  y: TILE*15 },
   { type: 'bookshelf',    x: TILE*13, y: TILE*11 },
+];
+
+/* Work zone decorations (non-plant) — pakai kelas .lounge-item utk reuse style. */
+const WORK_DECO = [
+  // Rak buku di pojok kanan-atas WORK zone (col 13-14, row 1)
+  { type: 'bookshelf',    x: TILE*13, y: TILE*1  },
 ];
 
 /* Work zone plants — JANGAN dekat walkway (yang ada di cols 8-12 rows 13-14).
@@ -210,6 +218,12 @@ function renderLoungeDecorations() {
 function renderWorkPlants() {
   return WORK_PLANTS.map(p =>
     `<div class="work-plant" style="left:${p.x}px; top:${p.y}px;"></div>`
+  ).join('');
+}
+
+function renderWorkDeco() {
+  return WORK_DECO.map(it =>
+    `<div class="lounge-item ${it.type}" style="left:${it.x}px; top:${it.y}px;"></div>`
   ).join('');
 }
 
@@ -386,7 +400,8 @@ function renderStaticOnce() {
     '<span class="zone-label">WORK</span>' +
     renderTennis() +
     renderDispenser() +
-    renderWorkPlants();
+    renderWorkPlants() +
+    renderWorkDeco();
   const zoneLounge = document.getElementById('zone-lounge');
   zoneLounge.innerHTML =
     '<span class="zone-label">LOUNGE</span>' +
@@ -572,6 +587,7 @@ const LOUNGE_ITEM_DIMS = {
   'coffee-table': { w: 2, h: 2 },
   cactus:         { w: 1, h: 2 },
   'large-plant':  { w: 2, h: 3 },
+  'tv-deco':      { w: 2, h: 2 },
 };
 
 function markObstacleTile(grid, col, row, wTile, hTile) {
@@ -618,6 +634,13 @@ function buildWalkableGrid() {
   for (const p of WORK_PLANTS) {
     markObstacleTile(grid,
       Math.round(p.x / TILE), Math.round(p.y / TILE), 1, 2);
+  }
+
+  // Work zone deco (bookshelf di pojok kanan-atas, etc.)
+  for (const it of WORK_DECO) {
+    const dims = LOUNGE_ITEM_DIMS[it.type] || { w: 1, h: 1 };
+    markObstacleTile(grid,
+      Math.round(it.x / TILE), Math.round(it.y / TILE), dims.w, dims.h);
   }
 
   // Lounge decorations (positions relative to lounge container, offset col 16)

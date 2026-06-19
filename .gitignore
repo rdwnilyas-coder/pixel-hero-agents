@@ -20,6 +20,8 @@ Thumbs.db
 # Runtime artifacts
 sessions_*.json
 capture_*.png
+viewport_*.png
+live_capture.png
 *.log
 
 # Build / dist

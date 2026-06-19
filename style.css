@@ -11,7 +11,14 @@
   --yellow: #f5d76e;
   --orange: #ff9a4a;
   --pink: #ff7ec8;
-  --tile: 48px;        /* native 16 × scale 3 */
+  /* --tile auto-fit: max 48px, atau muat di sisa viewport
+     Vertical overhead: header (~80) + room padding (~32) + footer (~38) = ~150.
+     Horizontal overhead: room paddings ~48. */
+  --tile: min(
+    48px,
+    calc((100vh - 150px) / 16),
+    calc((100vw - 48px) / 30)
+  );
 }
 
 * {
@@ -70,12 +77,30 @@ html, body {
 
 /* === SHOWCASE STRIP (15 heroes + 15 sub-agents) === */
 .showcase {
-  padding: 18px 24px 10px;
+  padding: 10px 24px 8px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
   background: rgba(20, 14, 45, 0.55);
   border-bottom: 2px solid #5a3e8c;
+}
+.showcase.showcase-bottom {
+  border-bottom: none;
+  border-top: 2px solid #5a3e8c;
+  align-items: flex-end;            /* rata-kanan untuk seluruh block */
+}
+.showcase.showcase-bottom .showcase-block {
+  align-items: flex-end;            /* head + strip rata-kanan */
+  max-width: 70%;
+}
+.showcase.showcase-bottom .showcase-head {
+  justify-content: flex-end;
+  text-align: right;
+}
+.showcase.showcase-bottom .char-strip {
+  justify-content: flex-end;
+  flex-wrap: wrap;                  /* biarkan wrap supaya tetap rapih kanan */
+  overflow-x: visible;
 }
 .showcase-block { display: flex; flex-direction: column; gap: 8px; }
 .showcase-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
@@ -103,6 +128,38 @@ html, body {
   flex-wrap: nowrap;
   overflow-x: auto;
   padding: 4px 2px 8px;
+}
+
+/* Inline strip — sprite kecil utk topbar / floating panel */
+.char-strip.char-strip-inline {
+  gap: 4px;
+  padding: 0;
+  overflow: visible;
+  flex-wrap: nowrap;
+  align-items: center;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  max-width: 100%;
+}
+.sub-strip-floating .char-strip.char-strip-inline {
+  justify-content: flex-start;
+  flex-wrap: nowrap;                  /* paksa 1 row lurus */
+  max-width: none;
+}
+.char-strip.char-strip-inline .char-cell {
+  width: 32px;
+  height: 38px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid #4a3a6d;
+  padding: 1px;
+  gap: 0;
+}
+.char-strip.char-strip-inline .char-cell .sprite {
+  width: 26px;
+  height: 26px;
+}
+.char-strip.char-strip-inline .char-cell .idx {
+  display: none;
 }
 .char-cell {
   flex: 0 0 auto;
@@ -164,15 +221,37 @@ html, body {
 
 /* === ROOM (30×16 tiles = 1440×768) === */
 .room {
-  padding: 24px 16px 40px;
+  padding: 12px 16px 20px;
   display: flex;
   justify-content: center;
 }
 
+/* Floating sub-agent strip di pojok kiri-bawah (overlay, tidak nambah tinggi) */
+.sub-strip-floating {
+  position: fixed;
+  left: 12px;
+  bottom: 36px;                       /* nempel di atas footer botbar */
+  z-index: 50;
+  background: rgba(20, 14, 45, 0.92);
+  border: 2px solid #5a3e8c;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: none;                    /* 1 row, ikut isi */
+  pointer-events: auto;
+}
+.sub-strip-label {
+  font-size: 8px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-align: left;
+}
+
 .room-inner {
   position: relative;
-  width: 1440px;
-  height: 768px;
+  width: calc(var(--tile) * 30);
+  height: calc(var(--tile) * 16);
   background: #2c2440;     /* outer paddings/walls dark */
   border: 6px solid #2c2440;
   box-shadow:
@@ -296,6 +375,48 @@ html, body {
 .lounge-item.clock {
   width: var(--tile); height: calc(var(--tile)*2);
   background-image: url('assets/furniture/CLOCK/CLOCK.png');
+}
+
+/* Decorative retro TV ilustrasi (bukan TV log) — CSS-only, 2x2 tile */
+.lounge-item.tv-deco {
+  width: calc(var(--tile)*2);
+  height: calc(var(--tile)*2);
+  background: none;
+}
+.lounge-item.tv-deco::before {
+  /* Antena V */
+  content: "";
+  position: absolute;
+  top: 4px; left: 50%;
+  width: 28px; height: 14px;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(45deg, transparent 47%, #3a2a1a 47% 53%, transparent 53%),
+    linear-gradient(-45deg, transparent 47%, #3a2a1a 47% 53%, transparent 53%);
+  background-size: 100% 100%;
+}
+.lounge-item.tv-deco::after {
+  /* Body TV: frame kayu + layar hijau retro + kaki */
+  content: "";
+  position: absolute;
+  left: 6px; right: 6px;
+  top: 14px; bottom: 8px;
+  background:
+    /* layar hijau dengan scanline */
+    repeating-linear-gradient(0deg,
+      transparent 0 3px, rgba(0,0,0,0.25) 3px 4px),
+    radial-gradient(ellipse at 35% 30%,
+      rgba(180,255,180,0.55) 0%,
+      transparent 45%),
+    radial-gradient(ellipse at center,
+      #4dbf5d 0%, #2a7a3a 70%, #143a1f 100%);
+  border: 6px solid #8b5a2b;
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 0 2px #6a3a1a,
+    inset 0 0 8px rgba(0,0,0,0.5),
+    3px 4px 0 rgba(0,0,0,0.4);
+  image-rendering: pixelated;
 }
 
 /* Work zone decorations (plants) */
@@ -526,11 +647,11 @@ html, body {
   font-weight: bold;
 }
 
-/* Cell label — di bawah worker (worker bottom ~ row 3.0 dgn height 110px) */
+/* Cell label — nempel di bawah worker (worker bottom ~ row 3.0) */
 .cell-label {
   position: absolute;
   left: 50%;
-  top: calc(var(--tile) * 4.2);      /* di bawah worker, di luar station */
+  top: calc(var(--tile) * 3.05);     /* langsung di bawah worker */
   transform: translateX(-50%);
   font-size: 7px;
   color: #1a1530;
@@ -566,14 +687,16 @@ html, body {
 
 .botbar {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 10px 20px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 6px 20px;
   background: rgba(20, 14, 45, 0.85);
   border-top: 4px solid #5a3e8c;
   font-size: 8px;
   color: var(--text-dim);
   align-items: center;
+  justify-content: space-between;
   position: relative;
   z-index: 10;
 }
