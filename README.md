@@ -9,7 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8+-3776ab?logo=python&logoColor=white)](https://www.python.org/)
 [![No dependencies](https://img.shields.io/badge/server-stdlib%20only-success)](serve.py)
-[![Made by](https://img.shields.io/badge/made%20by-%40rdwnilyas-ff7ec8)](https://github.com/rdwnilyas)
+[![Made by](https://img.shields.io/badge/made%20by-%40rdwnilyas%20on%20IG-E1306C?logo=instagram&logoColor=white)](https://instagram.com/rdwnilyas)
 
 </div>
 
@@ -51,7 +51,7 @@ It's part status panel, part dollhouse. Mostly dollhouse.
 ### Run
 
 ```bash
-git clone https://github.com/rdwnilyas/pixel-hero-agents.git
+git clone https://instagram.com/rdwnilyas/pixel-hero-agents.git
 cd pixel-hero-agents
 python serve.py
 ```
@@ -126,7 +126,7 @@ pixel-hero-agents/
 ## 🎨 Credits
 
 - **Office furniture, floor, and wall tiles** are reused from [pixel-agents-hq/pixel-agents](https://github.com/pixel-agents-hq/pixel-agents) (MIT, © 2026 Pablo De Lucca). Big thanks — this would have taken weeks without them.
-- **Hero & sub-agent character sheets** were AI-generated/provided by [@rdwnilyas](https://github.com/rdwnilyas) and cropped automatically by the `scripts/crop_*.py` tools.
+- **Hero & sub-agent character sheets** were AI-generated/provided by [@rdwnilyas](https://instagram.com/rdwnilyas) and cropped automatically by the `scripts/crop_*.py` tools.
 - Tennis court, water dispenser, and TV CRT are hand-rolled SVG/CSS.
 - Font: [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) via Google Fonts.
 
@@ -150,6 +150,6 @@ MIT — see [LICENSE](LICENSE). All assets shipped in this repo are MIT-compatib
 
 <div align="center">
 
-Made with 🦊🐺🐱🐰🐻🐼🦦🦅🐭🐗🐿️🐸🐕🦔🦌 by <a href="https://github.com/rdwnilyas">@rdwnilyas</a>
+Made with 🦊🐺🐱🐰🐻🐼🦦🦅🐭🐗🐿️🐸🐕🦔🦌 by <a href="https://instagram.com/rdwnilyas">@rdwnilyas</a>
 
 </div>

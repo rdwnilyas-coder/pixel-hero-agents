@@ -68,6 +68,100 @@ html, body {
 .stat.active b { color: var(--green); }
 .stat.recent b { color: var(--yellow); }
 
+/* === SHOWCASE STRIP (15 heroes + 15 sub-agents) === */
+.showcase {
+  padding: 18px 24px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: rgba(20, 14, 45, 0.55);
+  border-bottom: 2px solid #5a3e8c;
+}
+.showcase-block { display: flex; flex-direction: column; gap: 8px; }
+.showcase-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.showcase-head h2 {
+  margin: 0;
+  font-size: 11px;
+  color: var(--text);
+  letter-spacing: 1px;
+}
+.showcase-sub {
+  font-size: 9px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.showcase-sub code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border: 1px solid #5a3e8c;
+  color: var(--orange);
+  font-size: 8px;
+}
+.char-strip {
+  display: flex;
+  gap: 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+}
+.char-cell {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid #4a3a6d;
+  padding: 4px;
+}
+.char-cell .sprite {
+  flex: 1 1 auto;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom center;
+  image-rendering: pixelated;
+}
+.char-cell .idx {
+  font-size: 7px;
+  color: var(--text-dim);
+}
+/* Hero strip sprite mapping */
+.char-strip:not(.char-strip-sub) .sprite.idx-0  { background-image: url('assets/agents/agent_0.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-1  { background-image: url('assets/agents/agent_1.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-2  { background-image: url('assets/agents/agent_2.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-3  { background-image: url('assets/agents/agent_3.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-4  { background-image: url('assets/agents/agent_4.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-5  { background-image: url('assets/agents/agent_5.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-6  { background-image: url('assets/agents/agent_6.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-7  { background-image: url('assets/agents/agent_7.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-8  { background-image: url('assets/agents/agent_8.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-9  { background-image: url('assets/agents/agent_9.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-10 { background-image: url('assets/agents/agent_10.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-11 { background-image: url('assets/agents/agent_11.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-12 { background-image: url('assets/agents/agent_12.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-13 { background-image: url('assets/agents/agent_13.png'); }
+.char-strip:not(.char-strip-sub) .sprite.idx-14 { background-image: url('assets/agents/agent_14.png'); }
+/* Sub strip sprite mapping */
+.char-strip-sub .sprite.idx-0  { background-image: url('assets/subagents/sub_0.png'); }
+.char-strip-sub .sprite.idx-1  { background-image: url('assets/subagents/sub_1.png'); }
+.char-strip-sub .sprite.idx-2  { background-image: url('assets/subagents/sub_2.png'); }
+.char-strip-sub .sprite.idx-3  { background-image: url('assets/subagents/sub_3.png'); }
+.char-strip-sub .sprite.idx-4  { background-image: url('assets/subagents/sub_4.png'); }
+.char-strip-sub .sprite.idx-5  { background-image: url('assets/subagents/sub_5.png'); }
+.char-strip-sub .sprite.idx-6  { background-image: url('assets/subagents/sub_6.png'); }
+.char-strip-sub .sprite.idx-7  { background-image: url('assets/subagents/sub_7.png'); }
+.char-strip-sub .sprite.idx-8  { background-image: url('assets/subagents/sub_8.png'); }
+.char-strip-sub .sprite.idx-9  { background-image: url('assets/subagents/sub_9.png'); }
+.char-strip-sub .sprite.idx-10 { background-image: url('assets/subagents/sub_10.png'); }
+.char-strip-sub .sprite.idx-11 { background-image: url('assets/subagents/sub_11.png'); }
+.char-strip-sub .sprite.idx-12 { background-image: url('assets/subagents/sub_12.png'); }
+.char-strip-sub .sprite.idx-13 { background-image: url('assets/subagents/sub_13.png'); }
+.char-strip-sub .sprite.idx-14 { background-image: url('assets/subagents/sub_14.png'); }
+
 /* === ROOM (30×16 tiles = 1440×768) === */
 .room {
   padding: 24px 16px 40px;

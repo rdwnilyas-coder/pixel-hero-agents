@@ -978,5 +978,20 @@ function startCountdown() {
   }, 1000);
 }
 
+renderCharacterStrips();
 tick();
 startCountdown();
+
+function renderCharacterStrips() {
+  const hero = document.getElementById('hero-strip');
+  const sub = document.getElementById('sub-strip');
+  if (!hero || !sub) return;
+  let heroHtml = '';
+  let subHtml = '';
+  for (let i = 0; i < 15; i++) {
+    heroHtml += `<div class="char-cell"><div class="sprite idx-${i}"></div><span class="idx">${String(i).padStart(2,'0')}</span></div>`;
+    subHtml += `<div class="char-cell"><div class="sprite idx-${i}"></div><span class="idx">${String(i).padStart(2,'0')}</span></div>`;
+  }
+  hero.innerHTML = heroHtml;
+  sub.innerHTML = subHtml;
+}
