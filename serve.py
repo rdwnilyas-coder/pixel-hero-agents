@@ -100,11 +100,10 @@ def scan_sessions() -> dict:
             last_tool = ""
             recent_subagent_ts = 0.0
             subagent_types: dict[str, int] = {}
-            recent_subagent_types: dict[str, int] = {}
-            # Track sub-agent tool_use IDs yang BELUM ada tool_result-nya
-            # = sub-agent yang STILL RUNNING
-            pending_subagent_by_id: dict[str, str] = {}   # id -> type
-            completed_subagent_ids: set[str] = set()
+            # tid -> {"type": str, "recent": bool, "pending": bool}
+            # Per-tid info supaya tidak double-count saat keduanya kondisi
+            # terpenuhi (sub-agent BARU spawn yg masih running).
+            sub_by_id: dict[str, dict] = {}
 
             try:
                 with open(jsonl, encoding="utf-8") as fp:
@@ -150,10 +149,8 @@ def scan_sessions() -> dict:
                                                   or "general")
                                         subagent_types[st] = (
                                             subagent_types.get(st, 0) + 1)
-                                        # Track by id untuk pending detection
                                         tid = c.get("id", "")
-                                        if tid:
-                                            pending_subagent_by_id[tid] = st
+                                        is_recent = False
                                         ts = rec.get("timestamp", "")
                                         if ts:
                                             try:
@@ -162,23 +159,30 @@ def scan_sessions() -> dict:
                                                     ts.replace("Z", "+00:00")
                                                 )
                                                 spawn_ts = dt.timestamp()
-                                                if (now - spawn_ts) < 900:  # 15 menit
-                                                    recent_subagent_types[st] = (
-                                                        recent_subagent_types.get(st, 0) + 1)
+                                                if (now - spawn_ts) < 900:
+                                                    is_recent = True
                                                 if spawn_ts > recent_subagent_ts:
                                                     recent_subagent_ts = spawn_ts
                                             except Exception:
                                                 pass
+                                        if tid:
+                                            sub_by_id[tid] = {
+                                                "type": st,
+                                                "recent": is_recent,
+                                                "pending": True,
+                                            }
                                 elif ctype == "tool_result":
                                     tid = c.get("tool_use_id", "")
-                                    if tid:
-                                        completed_subagent_ids.add(tid)
+                                    if tid and tid in sub_by_id:
+                                        sub_by_id[tid]["pending"] = False
             except Exception:
                 pass
 
-            # Pending sub-agents = STILL RUNNING.
-            for tid, st in pending_subagent_by_id.items():
-                if tid not in completed_subagent_ids:
+            # Hitung recent_subagent_types: per-tid SEKALI, qualif=recent OR pending
+            recent_subagent_types: dict[str, int] = {}
+            for tid, info in sub_by_id.items():
+                if info["recent"] or info["pending"]:
+                    st = info["type"]
                     recent_subagent_types[st] = (
                         recent_subagent_types.get(st, 0) + 1)
 
